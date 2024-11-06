@@ -16,26 +16,9 @@ def MyHttpTrigger(req: func.HttpRequest) -> func.HttpResponse:
 
     numero = req.params.get('numero')
 
-    if not numero:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
+    if numero:
+        fi = checknumero(numero)
+        if fi:
+            return func.HttpResponse(f"numero pari")
         else:
-            numero = req_body.get('numero')
-
-    if type(numero) is str:
-        try:
-            numero = int(numero)  # Converti il valore in intero
-            risultato = checknumero(numero)
-            return func.HttpResponse(f"Processed text: {risultato}", mimetype="text/html")
-        except ValueError:
-            return func.HttpResponse(
-                "Il valore fornito non è un numero valido.",
-                status_code=400
-            )
-    else:
-        return func.HttpResponse(
-             "Nessun numero fornito.",
-             status_code=400
-        )
+            return func.HttpResponse(f"numero dispari")
