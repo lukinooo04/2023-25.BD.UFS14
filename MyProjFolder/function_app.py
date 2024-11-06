@@ -30,3 +30,7 @@ def MyHttpTrigger(req: func.HttpRequest) -> func.HttpResponse:
              "AHAHAH.",
              status_code=200
         )
+
+
+
+#ciao
