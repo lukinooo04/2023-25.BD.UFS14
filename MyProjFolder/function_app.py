@@ -19,6 +19,6 @@ def MyHttpTrigger(req: func.HttpRequest) -> func.HttpResponse:
     if numero:
         fi = checknumero(numero)
         if fi:
-            return func.HttpResponse(f"numero pari")
+            return func.HttpResponse("numero pari")
         else:
-            return func.HttpResponse(f"numero dispari")
+            return func.HttpResponse("numero dispari")
