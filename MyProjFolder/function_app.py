@@ -6,9 +6,9 @@ app = func.FunctionApp()
 
 def checknumero(numero):
     if numero % 2 == 0:
-        return f"{numero} è divisibile per 2 e quindi è un numero pari."
+        return True  # Restituisce True se il numero è pari
     else:
-        return f"{numero} non è divisibile per 2 e quindi è un numero dispari."
+        return False  # Restituisce False se il numero è dispari
 
 @app.route(route="MyHttpTrigger", auth_level=func.AuthLevel.ANONYMOUS)
 def MyHttpTrigger(req: func.HttpRequest) -> func.HttpResponse:
@@ -17,8 +17,13 @@ def MyHttpTrigger(req: func.HttpRequest) -> func.HttpResponse:
     numero = req.params.get('numero')
 
     if numero:
-        fi = checknumero(numero)
-        if fi:
-            return func.HttpResponse("numero pari")
-        else:
-            return func.HttpResponse("numero dispari")
+        try:
+            numero = int(numero)  # Converti il valore in intero
+            if checknumero(numero):
+                return func.HttpResponse("Il numero è pari.", status_code=200)
+            else:
+                return func.HttpResponse("Il numero è dispari.", status_code=200)
+        except ValueError:
+            return func.HttpResponse("Il valore fornito non è un numero valido.", status_code=400)
+    else:
+        return func.HttpResponse("Nessun numero fornito.", status_code=400)
