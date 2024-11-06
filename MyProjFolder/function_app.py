@@ -1,40 +1,41 @@
 import azure.functions as func
-import datetime
 import json
 import logging
-import re  # Import the re module for regular expressions
 
 app = func.FunctionApp()
 
-def highlight_numbers(text):
-    text = re.sub(r'(\d+,\d+\.?\d*)', r'<b style="color:red;">\1</b>', text)
-    
-    highlight_words = ["Ciao", "Bello", "Aurora", "Amo", "William"]
-    if highlight_words:
-        pattern = r'\b(' + '|'.join(re.escape(word) for word in highlight_words) + r')\b'
-        text = re.sub(pattern, r'<span style="color:yellow">\1</span>', text)
-    
-    return text
+def checknumero(numero):
+    if numero % 2 == 0:
+        return f"{numero} è divisibile per 2 e quindi è un numero pari."
+    else:
+        return f"{numero} non è divisibile per 2 e quindi è un numero dispari."
 
 @app.route(route="MyHttpTrigger", auth_level=func.AuthLevel.ANONYMOUS)
 def MyHttpTrigger(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    text = req.params.get('text')
+    numero = req.params.get('numero')
 
-    if not text:
+    if not numero:
         try:
             req_body = req.get_json()
         except ValueError:
             pass
         else:
-            text = req_body.get('text')
+            numero = req_body.get('numero')
 
-    if text:
-        highlighted_text = highlight_numbers(text)
-        return func.HttpResponse(f"Processed text: {highlighted_text}", mimetype="text/html")
+    if numero:
+        try:
+            numero = int(numero)  # Converti il valore in intero
+            risultato = checknumero(numero)
+            return func.HttpResponse(f"Processed text: {risultato}", mimetype="text/html")
+        except ValueError:
+            return func.HttpResponse(
+                "Il valore fornito non è un numero valido.",
+                status_code=400
+            )
     else:
         return func.HttpResponse(
-             "No text provided.",
+             "Nessun numero fornito.",
              status_code=400
         )
