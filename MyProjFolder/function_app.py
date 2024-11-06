@@ -24,7 +24,7 @@ def MyHttpTrigger(req: func.HttpRequest) -> func.HttpResponse:
         else:
             numero = req_body.get('numero')
 
-    if numero:
+    if str(numero):
         try:
             numero = int(numero)  # Converti il valore in intero
             risultato = checknumero(numero)
